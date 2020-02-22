@@ -34,7 +34,8 @@ create table user
 	token char(36) null,
 	gmt_create bigint null,
 	gmt_modified bigint null,
-	avatar_url text null
+	avatar_url text null,
+    bio varchar(256) null
 );
 
 
