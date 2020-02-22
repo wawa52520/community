@@ -10,6 +10,7 @@ import java.io.IOException;
 
 @Component
 public class GithubProvider {
+    //通过OKhttp来post AccessTokenDTO中的五个值并获取access_token,并对返回值进行split操作截取access_token
     public String getAccessToken(AccessTokenDTO accessTokenDTO) {
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
@@ -30,7 +31,7 @@ public class GithubProvider {
         }
         return null;
     }
-
+//    在AuthorizeController中通过getAccessToken返回的Accesstoken作为参数进行okhttp的get请求得到user
     public GithubUser getUser(String accessToken) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
