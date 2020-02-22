@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -34,7 +36,8 @@ public class AuthorizeController {
 //    通过HttpServletRequest request 拿到session
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest request
+                           HttpServletRequest request,
+                           HttpServletResponse response
                            ) {
 //        1.通过index.html的连接进行访问github,从github返回的callback通过@RequestParam注解来获取code和state的值
 //        设置code，state，redirect_url，state，client_id,client_secret值进行传输
@@ -53,7 +56,8 @@ public class AuthorizeController {
         if (githubUser != null){
 //            通过GithubUser中获取到的值来设置model中user的值并存入数据库
             User user = new User();
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
@@ -61,7 +65,10 @@ public class AuthorizeController {
             user.setAvatarUrl(githubUser.getAvatar_url());
             userMapper.insert(user);
 
-            request.getSession().setAttribute("user",githubUser);
+//            将产生的uuid随机码作为token存入前端中
+            response.addCookie(new Cookie("token",token));
+
+//            request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
 //            拿到session，写入前端
         }else{
