@@ -2,6 +2,8 @@ package life.majiang.community.controller;
 
 import life.majiang.community.dto.AccessTokenDTO;
 import life.majiang.community.dto.GithubUser;
+import life.majiang.community.mapper.UserMapper;
+import life.majiang.community.model.User;
 import life.majiang.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Controller
 public class AuthorizeController {
@@ -22,6 +25,9 @@ public class AuthorizeController {
     private String clientSecret;
     @Value("${github.redirect.uri}")
     private String redirectUri;
+
+    @Autowired
+    private UserMapper userMapper;
 
 
     @GetMapping("/callback")
@@ -40,11 +46,22 @@ public class AuthorizeController {
         accessTokenDTO.setClient_secret(clientSecret);
 
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
-        GithubUser user = githubProvider.getUser(accessToken);
+//        GithubUser类存储的user的值
+        GithubUser githubUser = githubProvider.getUser(accessToken);
 
 //        判断接受的user信息是否存在
-        if (user != null){
-            request.getSession().setAttribute("user",user);
+        if (githubUser != null){
+//            通过GithubUser中获取到的值来设置model中user的值并存入数据库
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setName(githubUser.getName());
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmrModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatar_url());
+            userMapper.insert(user);
+
+            request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
 //            拿到session，写入前端
         }else{
