@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/community.css">
+    <link rel="stylesheet" th:href="@{/css/community.css}">
     <title>社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
@@ -61,5 +63,37 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 .col-md-12 .col-sm-12 .col-xs-12">
+            <h2>
+                <span class="glyphicon glyphicon-list" aria-hidden="true">
+                发现
+                </span>
+            </h2>
+            <hr/>
+            <div class="media" th:each="question : ${questions}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-circle avatar" th:src="${question.user.avatarUrl}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading" th:text="${question.title}"></h3>
+                    <span th:text="${question.description}"></span>
+                    <br>
+                    <span class="text-desc">
+                        <span th:value="${question.commentCount}">个回复·</span>
+                        <span th:value="${question.viewCount}">次浏览</span>
+                        <span >·1小时前</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 .col-md-12 .col-sm-12 .col-xs-12">
+            <h2>问题列表：</h2>
+        </div>
+    </div>
+</div>
 </body>
 </html>

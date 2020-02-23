@@ -11,3 +11,13 @@ body {
     float: right;
     margin-bottom: 10px;
 }
+
+.avatar{
+    width: 70px;
+    height: 70px;
+}
+.text-desc{
+    font-size: 12px;
+    font-weight: normal;
+    color: #999;
+}
