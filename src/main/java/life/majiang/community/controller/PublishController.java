@@ -28,9 +28,9 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title")String title,
-            @RequestParam("description")String description,
-            @RequestParam("tag")String tag,
+            @RequestParam(value = "title",required = false)String title,
+            @RequestParam(value = "description",required = false)String description,
+            @RequestParam(value = "tag",required = false)String tag,
             HttpServletRequest request,
             Model model
     ){
@@ -71,6 +71,7 @@ public class PublishController {
             return "publish";
         }
 
+//        创建question对象，将值传入前端
         Question question = new Question();
         question.setTitle(title);
         question.setDescription(description);
