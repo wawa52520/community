@@ -38,7 +38,7 @@ public class AuthorizeController {
                            @RequestParam(name = "state") String state,
                            HttpServletRequest request,
                            HttpServletResponse response
-                           ) {
+    ) {
 //        1.通过index.html的连接进行访问github,从github返回的callback通过@RequestParam注解来获取code和state的值
 //        设置code，state，redirect_url，state，client_id,client_secret值进行传输
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
@@ -53,7 +53,7 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUser(accessToken);
 
 //        判断接受的user信息是否存在
-        if (githubUser != null){
+        if (githubUser != null && githubUser.getId() != null) {
 //            通过GithubUser中获取到的值来设置model中user的值并存入数据库
             User user = new User();
             String token = UUID.randomUUID().toString();
@@ -66,12 +66,12 @@ public class AuthorizeController {
             userMapper.insert(user);
 
 //            将产生的uuid随机码作为token存入前端中
-            response.addCookie(new Cookie("token",token));
+            response.addCookie(new Cookie("token", token));
 
 //            request.getSession().setAttribute("user",githubUser);
             return "redirect:/";
 //            拿到session，写入前端
-        }else{
+        } else {
             return "redirect:/";
         }
 //        System.out.println(user.getName());
