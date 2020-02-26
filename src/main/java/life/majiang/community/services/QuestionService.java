@@ -1,5 +1,6 @@
 package life.majiang.community.services;
 
+import life.majiang.community.dto.PaginationDTO;
 import life.majiang.community.dto.QuestionDTO;
 import life.majiang.community.mapper.QuestionMapper;
 import life.majiang.community.mapper.UserMapper;
@@ -20,18 +21,26 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public List<QuestionDTO> list() {
+    public PaginationDTO list(Integer page, Integer size) {
+//        offset为mysql limit的index
+        Integer offset = size * (page - 1);
 
-        List<Question> questions = questionMapper.list();
+        List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+        PaginationDTO paginationDTO = new PaginationDTO();
+
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
+            BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
+        paginationDTO.setQuestions(questionDTOList);
+        Integer totalCount = questionMapper.count();//sql返回的总记录数
 
-        return questionDTOList;
+        paginationDTO.setPagination(totalCount, page, size);
+        return paginationDTO;
     }
 }
