@@ -16,10 +16,10 @@ public class PaginationDTO {
     private Integer page;//当前页面
     private List<Integer> pages = new ArrayList<>();//当前总页数
 
+    private Integer totalPage;//总页数，总页数=总记录数/显示的页数（default=5）
+
 
     public void setPagination(Integer totalCount, Integer page, Integer size) {
-
-        Integer totalPage;//总页数，总页数=总记录数/显示的页数（default=5）；
         //计算总页数
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
@@ -27,6 +27,14 @@ public class PaginationDTO {
             totalPage = totalCount / size + 1;
         }
 
+        if (page<1){
+            page=1;
+        }
+        if (page>totalPage){
+            page=totalPage;
+        }
+
+        this.page=page;
         pages.add(page);
         for (int i = 1; i <= 3; i++) {
             if (page - i > 0) {
