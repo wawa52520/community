@@ -23,16 +23,26 @@ public class QuestionService {
 
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
+        Integer totalPage;
+
         Integer totalCount = questionMapper.count();//sql返回的总记录数
-        paginationDTO.setPagination(totalCount, page, size);
+
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+
+
 //容错处理
         if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTO.getTotalPage()) {
-            page = paginationDTO.getTotalPage();
+        if (page > totalPage) {
+            page = totalPage;
         }
 
+        paginationDTO.setPagination(totalPage, page);
 //        offset为mysql limit的index
         Integer offset = size * (page - 1);
 
@@ -51,19 +61,35 @@ public class QuestionService {
     }
 
     public PaginationDTO list(Integer userId, Integer page, Integer size) {
+
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionMapper.count();//sql返回的总记录数
-        paginationDTO.setPagination(totalCount, page, size);
+
+        Integer totalPage;
+
+        Integer totalCount = questionMapper.countByUserId(userId);//sql返回的总记录数
+
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+
+
 //容错处理
         if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTO.getTotalPage()) {
-            page = paginationDTO.getTotalPage();
+        if (page > totalPage) {
+            page = totalPage;
         }
+
+        paginationDTO.setPagination(totalPage, page);
 
 //        offset为mysql limit的index
         Integer offset = size * (page - 1);
+        if (offset<0){
+            offset=0;
+        }
 
         List<Question> questions = questionMapper.listByuserId(userId, offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
