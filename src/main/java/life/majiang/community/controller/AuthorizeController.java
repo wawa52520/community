@@ -5,6 +5,7 @@ import life.majiang.community.dto.GithubUser;
 import life.majiang.community.mapper.UserMapper;
 import life.majiang.community.model.User;
 import life.majiang.community.provider.GithubProvider;
+import life.majiang.community.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -28,8 +29,9 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectUri;
 
+
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
 
     @GetMapping("/callback")
@@ -56,16 +58,13 @@ public class AuthorizeController {
         if (githubUser != null && githubUser.getId() != null) {
 //            通过GithubUser中获取到的值来设置model中user的值并存入数据库
             User user = new User();
+            //            将产生的uuid随机码作为token存入前端中
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmrModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatar_url());
-            userMapper.insert(user);
-
-//            将产生的uuid随机码作为token存入前端中
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", token));
 
 //            request.getSession().setAttribute("user",githubUser);

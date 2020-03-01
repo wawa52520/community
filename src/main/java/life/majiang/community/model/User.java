@@ -9,6 +9,6 @@ public class User {
     private String accountId;
     private String token;
     private Long gmtCreate;
-    private Long gmrModified;
+    private Long gmtModified;
     private String avatarUrl;
 }
