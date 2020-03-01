@@ -23,19 +23,46 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
+<!--navigation头部-->
 <div th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main profile">
     <div class="row">
+<!--        网页左边-->
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h3>
                 <span th:text="${question.title}"></span>
             </h3>
-            <hr/>
+            <span class="text-desc">
+                        <span th:text="'作者:'+${question.user.name}+'|'"></span>
+                        <span th:text="'阅读数:'+${question.viewCount}+'|发布时间:'"></span>
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy.MM.dd HH:mm')}"></span>
+                    </span>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}"></div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <a class="col-lg-12 col-md-12 col-sm-12 col-xs-12 community-menu" th:href="@{'/publish/'+${question.id}}" >
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>编辑
+                </a>
         </div>
+
+<!--        网页右边-->
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h3>发起人</h3>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-circle avatar" th:src="${question.user.avatarUrl}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h3 class="media-heading" >
+                            <span th:text="${question.user.name}"></span>
+                        </h3>
+                    </div>
+                </div>
             </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h3>相关问题</h3>
             </div>
