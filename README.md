@@ -37,6 +37,20 @@ create table user
 	avatar_url text null,
     bio varchar(256) null
 );
+```
+comment表：
+```mysql
+create table comment
+(
+	id bigint auto_increment
+		primary key,
+	parent_id bigint not null comment '父类ID',
+	type int not null comment '父类类型',
+	commentator int not null comment '评论人id',
+	gmt_create bigint not null comment '创建时间',
+	gmt_modified bigint not null comment '修改时间',
+	like_count bigint default 0 null comment '点赞数'
+);
 
 
 ```
