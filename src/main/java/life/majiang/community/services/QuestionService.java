@@ -54,7 +54,9 @@ public class QuestionService {
         Integer offset = size * (page - 1);
 
 //        List<Question> questions = questionMapper.list(offset, size);
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");//倒序排
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 
@@ -108,6 +110,7 @@ public class QuestionService {
 //        List<Question> questions = questionMapper.listByuserId(userId, offset, size);
         QuestionExample example = new QuestionExample();
         example.createCriteria().andCreatorEqualTo(userId);
+        example.setOrderByClause("gmt_create desc");
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
